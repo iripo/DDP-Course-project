@@ -1,0 +1,66 @@
+<style>
+.small-code pre code {
+  font-size: 1em;
+}
+.midcenter {
+    position: fixed;
+    left: 20%;
+}
+</style>
+Exploring Red Wine characteristics and prediction model for quality of wine 
+========================================================
+author: Iriny Nisina
+date: 31 January 2016
+
+About the data
+========================================================
+The dataset for this project is public available for research. The details are described in [Cortez et al., 2009]. 
+ - P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis. 
+   Modeling wine preferences by data mining from physicochemical properties.
+ - In Decision Support Systems>, Elsevier, 47(4):547-553. ISSN: 0167-9236.
+ - Available at: [@Elsevier] http://dx.doi.org/10.1016/j.dss.2009.05.016
+                 [Pre-press (pdf)] http://www3.dsi.uminho.pt/pcortez/winequality09.pdf
+                 [bib] http://www3.dsi.uminho.pt/pcortez/dss09.bib
+
+Density Plot (for example alcohol by quality)
+========================================================
+class: midcenter
+```{r, echo=FALSE, results='hide'}
+library(lattice)
+library(caret)
+Data <- read.csv2("./data/winequality-red.csv")
+summary(Data)
+
+Data$fixed.acidity <- as.numeric(as.character(Data$fixed.acidity))
+Data$volatile.acidity <- as.numeric(as.character(Data$volatile.acidity))
+Data$citric.acid <- as.numeric(as.character(Data$citric.acid))
+Data$residual.sugar <- as.numeric(as.character(Data$residual.sugar))
+Data$chlorides <- as.numeric(as.character(Data$chlorides))
+Data$free.sulfur.dioxide <- as.numeric(as.character(Data$free.sulfur.dioxide))
+Data$total.sulfur.dioxide <- as.numeric(as.character(Data$total.sulfur.dioxide))
+Data$density <- as.numeric(as.character(Data$density))
+Data$pH <- as.numeric(as.character(Data$pH))
+Data$sulphates <- as.numeric(as.character(Data$sulphates))
+Data$alcohol <- as.numeric(as.character(Data$alcohol))
+Data$quality <- as.factor(Data$quality)
+```
+
+```{r, echo=FALSE}
+densityplot(~ alcohol | quality, data = Data, col="dark red", main="Red wine characteristic by Quality score", sub="3-3 Scored, 4-4 Scored, 5-5 Scored, 6-6 Scored, 7-7 Scored, 8-8 Scored", plot.points = FALSE, ref = TRUE)
+```
+
+Pairs Plot (for example only 4 variables)
+========================================================
+class: midcenter
+```{r, echo=FALSE}
+    pairs(~ residual.sugar + pH + total.sulfur.dioxide + quality, data = Data, col="sky blue", main="Scatterplot Matrices")
+```
+
+Summary for prediction model (linear regression)
+========================================================
+class: small-code
+```{r}
+    set.seed(12344)
+    modFit <- train(as.numeric(quality)~., data = Data, method = "lm")
+    modFit
+```
